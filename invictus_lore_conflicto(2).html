@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>INVICTUS: Chronicle — Lore del Conflicto</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#05070a;--bg2:#070a0e;--surface:#0a0e14;--surface2:#0e1318;
+  --border:#141c28;--border2:#1a2438;
+  --text:#a0b0c0;--text-dim:#3a4a5a;--text-bright:#c8dae8;
+  --gold:#c8a44a;--gold2:#e0bc6a;
+  --greece:#4a8fd4;--greece2:#6aafea;--greece-dim:rgba(74,143,212,0.07);
+  --egypt:#c48a2a;--egypt2:#e0aa4a;--egypt-dim:rgba(196,138,42,0.07);
+  --neutral:#808090;--neutral-dim:rgba(128,128,144,0.06);
+  --void:#6a40a0;--void2:#8a60c0;--void-dim:rgba(106,64,160,0.07);
+  --red:#c04040;--green:#3a9c6a;--yellow:#b89030;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Crimson Pro',serif;font-size:16px;line-height:1.8;display:flex;min-height:100vh;}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+#sidebar{width:260px;background:var(--bg2);border-right:1px solid var(--border);height:100vh;position:fixed;top:0;left:0;overflow-y:auto;display:flex;flex-direction:column;z-index:50;}
+.sb-top{padding:22px 20px 18px;border-bottom:1px solid var(--border);}
+.sb-logo{font-family:'Cinzel',serif;font-size:.8rem;font-weight:700;color:var(--gold);letter-spacing:.1em;margin-bottom:2px;}
+.sb-sub{font-size:.62rem;color:var(--text-dim);font-family:'JetBrains Mono',monospace;letter-spacing:.05em;}
+.sb-nav{padding:8px 0 24px}
+.sb-group{padding:12px 14px 2px}
+.sb-group-label{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;}
+.sb-link{display:flex;align-items:center;gap:8px;padding:5px 10px;border-radius:4px;color:var(--text-dim);text-decoration:none;font-size:.8rem;font-family:'Crimson Pro',serif;transition:all .12s;}
+.sb-link:hover{background:var(--surface);color:var(--text-bright)}
+.sb-link.active{background:rgba(200,164,74,0.07);color:var(--gold);border-left:2px solid var(--gold);padding-left:8px;}
+.sb-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+.dot-g{background:var(--greece2)}.dot-e{background:var(--egypt2)}.dot-n{background:var(--neutral)}.dot-v{background:var(--void2)}.dot-gold{background:var(--gold)}
+
+#main{margin-left:260px;width:calc(100% - 260px);min-width:0;overflow-x:hidden;}
+
+.hero{
+  min-height:420px;padding:80px 72px 64px;
+  background:var(--bg2);border-bottom:1px solid var(--border);
+  position:relative;overflow:hidden;
+  display:flex;align-items:flex-end;
+}
+.hero::before{content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 40% 60% at 15% 50%, var(--greece-dim), transparent 60%),
+    radial-gradient(ellipse 40% 60% at 85% 50%, var(--egypt-dim), transparent 60%);
+}
+.hero-divider-line{
+  position:absolute;top:0;left:50%;bottom:0;width:1px;
+  background:linear-gradient(to bottom, transparent, rgba(200,164,74,0.12) 30%, rgba(200,164,74,0.12) 70%, transparent);
+}
+.hero-content{position:relative;z-index:1;max-width:700px;}
+.hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--text-dim);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.hero-eyebrow::before{content:'//';color:var(--border2)}
+.hero-h1{font-family:'Cinzel',serif;font-size:clamp(1.8rem,4vw,3rem);font-weight:900;color:var(--text-bright);line-height:1.05;margin-bottom:14px;}
+.hero-h1 em{font-style:normal;color:var(--gold);}
+.hero-desc{font-size:1rem;color:var(--text-dim);line-height:1.85;max-width:560px;font-style:italic;}
+
+.content{padding:0 72px 100px;max-width:960px;}
+
+.chapter{padding:64px 0 56px;border-bottom:1px solid var(--border);}
+.chapter:last-of-type{border-bottom:none}
+.ch-tag{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.ch-tag .n{color:var(--gold)}
+.ch-h2{font-family:'Cinzel',serif;font-size:1.6rem;font-weight:700;color:var(--text-bright);margin-bottom:8px;}
+.ch-lead{font-size:.97rem;color:var(--text-dim);font-style:italic;max-width:580px;line-height:1.9;margin-bottom:32px;padding-left:14px;border-left:2px solid var(--border2);}
+
+.sec{margin-bottom:52px}
+.sec-h3{font-family:'Cinzel',serif;font-size:1.05rem;font-weight:600;color:var(--gold2);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.sec-h3::after{content:'';flex:1;height:1px;background:var(--border)}
+
+p{font-size:.95rem;color:var(--text);line-height:1.9;margin-bottom:14px;}
+p:last-child{margin-bottom:0}
+strong{color:var(--text-bright);font-weight:600}
+em{color:var(--gold);font-style:italic}
+
+/* LORE BLOCKS */
+.lore-block{border-radius:0 6px 6px 0;padding:18px 22px;margin:0;position:relative;}.lore-block+.lore-block{margin-top:20px}.sec>.lore-block{margin-top:20px}.sec>.lore-block:first-child{margin-top:0}.sec p+.lore-block{margin-top:20px}
+.lore-block::before{content:'"';position:absolute;top:-8px;left:14px;font-family:'Cinzel',serif;font-size:2rem;line-height:1;opacity:.25;}
+.lore-block.greece{background:var(--greece-dim);border-left:3px solid var(--greece2)}.lore-block.greece::before{color:var(--greece2)}
+.lore-block.egypt{background:var(--egypt-dim);border-left:3px solid var(--egypt2)}.lore-block.egypt::before{color:var(--egypt2)}
+.lore-block.neutral{background:var(--neutral-dim);border-left:3px solid var(--neutral)}.lore-block.neutral::before{color:var(--neutral)}
+.lore-block.void{background:var(--void-dim);border-left:3px solid var(--void2)}.lore-block.void::before{color:var(--void2)}
+.lore-block.gold{background:rgba(200,164,74,0.05);border-left:3px solid var(--gold)}.lore-block.gold::before{color:var(--gold)}
+.lore-block p{font-size:.93rem;color:var(--text);line-height:1.9;margin-bottom:8px;}
+.lore-block p:last-of-type{margin-bottom:0}
+.lore-source{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--text-dim);margin-top:10px;letter-spacing:.08em;}
+.lore-block + .lore-block{margin-top:16px}
+
+/* FACTION SPLIT */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin:20px 0;border-radius:6px;overflow:hidden;}
+.split-col{padding:20px 18px;border:1px solid var(--border);}
+.split-col.gc{background:var(--greece-dim);border-color:rgba(74,143,212,0.15);}
+.split-col.eg{background:var(--egypt-dim);border-color:rgba(196,138,42,0.15);}
+.split-label{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;margin-bottom:10px;font-weight:600;}
+.split-col.gc .split-label{color:var(--greece2)}.split-col.eg .split-label{color:var(--egypt2)}
+.split-item{font-size:.86rem;color:var(--text-dim);padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.04);line-height:1.5;}
+.split-item:last-child{border-bottom:none}
+
+/* STATE CARDS */
+.states{display:flex;flex-direction:column;gap:8px;margin:20px 0;}
+.state-card{border-radius:6px;padding:18px 20px;border:1px solid var(--border);position:relative;overflow:hidden;}
+.state-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;}
+.state-greece{background:var(--greece-dim);border-color:rgba(74,143,212,0.18)}.state-greece::before{background:var(--greece2)}
+.state-egypt{background:var(--egypt-dim);border-color:rgba(196,138,42,0.18)}.state-egypt::before{background:var(--egypt2)}
+.state-balance{background:var(--neutral-dim);border-color:rgba(128,128,144,0.18)}.state-balance::before{background:var(--neutral)}
+.state-collapse{background:rgba(192,64,64,0.05);border-color:rgba(192,64,64,0.18)}.state-collapse::before{background:var(--red)}
+.state-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.state-name{font-family:'Cinzel',serif;font-size:.9rem;font-weight:700;color:var(--text-bright);}
+.state-tag{font-family:'JetBrains Mono',monospace;font-size:.58rem;padding:2px 8px;border-radius:3px;}
+.state-greece .state-tag{background:rgba(74,143,212,0.12);color:var(--greece2);}
+.state-egypt .state-tag{background:rgba(196,138,42,0.12);color:var(--egypt2);}
+.state-balance .state-tag{background:rgba(128,128,144,0.1);color:var(--neutral);}
+.state-collapse .state-tag{background:rgba(192,64,64,0.1);color:var(--red);}
+.state-desc{font-size:.86rem;color:var(--text-dim);line-height:1.65;margin-bottom:10px;}
+.state-effects{display:flex;flex-wrap:wrap;gap:6px;}
+.effect-tag{font-size:.68rem;padding:2px 8px;border-radius:3px;font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,0.04);border:1px solid var(--border2);color:var(--text-dim);}
+
+/* DEITY CARDS */
+.deity-appearances{display:flex;flex-direction:column;gap:14px;margin:24px 0;}
+.deity-appear{border-radius:6px;padding:16px 18px;border:1px solid var(--border);background:var(--surface);}
+.da-header{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.da-name{font-family:'Cinzel',serif;font-size:.88rem;font-weight:700;color:var(--text-bright);}
+.da-faction{font-family:'JetBrains Mono',monospace;font-size:.58rem;padding:1px 7px;border-radius:3px;}
+.da-greece{background:rgba(74,143,212,0.1);color:var(--greece2);}
+.da-egypt{background:rgba(196,138,42,0.1);color:var(--egypt2);}
+.da-neutral{background:rgba(128,128,144,0.1);color:var(--neutral);}
+.da-narrative{font-size:.86rem;color:var(--text-dim);line-height:1.65;margin-bottom:6px;font-style:italic;}
+.da-trigger{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--text-dim);padding-top:8px;border-top:1px solid var(--border);}
+.da-trigger strong{color:var(--text);font-family:'JetBrains Mono',monospace;}
+
+/* DYNAMIC TABLE */
+.tbl-wrap{overflow-x:auto;margin:16px 0;border-radius:6px;border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse}
+thead tr{background:var(--surface)}
+th{padding:8px 14px;text-align:left;font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);font-weight:500;border-bottom:1px solid var(--border);}
+td{padding:9px 14px;font-size:.86rem;color:var(--text);border-bottom:1px solid var(--border);line-height:1.5;vertical-align:top;}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,0.01)}
+.td-g{color:var(--greece2)}.td-e{color:var(--egypt2)}.td-n{color:var(--neutral)}.td-r{color:var(--red)}.td-gold{color:var(--gold)}
+
+/* CALLOUTS */
+.callout{border-radius:6px;padding:12px 14px;margin:16px 0;display:flex;gap:10px;font-size:.88rem;}
+.callout-icon{flex-shrink:0;margin-top:2px;}
+.callout-body{color:var(--text-dim);line-height:1.7}
+.callout-body strong{color:var(--text-bright);display:block;margin-bottom:3px;font-size:.86rem;}
+.callout.info{background:rgba(74,143,212,0.06);border:1px solid rgba(74,143,212,0.16)}
+.callout.info .callout-body strong{color:var(--greece2)}
+.callout.warn{background:rgba(200,164,74,0.05);border:1px solid rgba(200,164,74,0.15)}
+.callout.warn .callout-body strong{color:var(--gold2)}
+.callout.staff{background:var(--void-dim);border:1px solid rgba(106,64,160,0.18)}
+.callout.staff .callout-body strong{color:var(--void2)}
+
+/* ORNAMENT */
+.ornament{text-align:center;color:var(--border2);font-size:1rem;letter-spacing:.4em;margin:28px 0;}
+
+@media(max-width:900px){#sidebar{display:none}#main{margin-left:0;width:100%}.content{padding:0 24px 60px}.hero{padding:48px 24px 40px}.split{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<nav id="sidebar">
+  <div class="sb-top">
+    <div class="sb-logo">INVICTUS: Chronicle</div>
+    <div class="sb-sub">Lore del Conflicto — Interno</div>
+  </div>
+  <div class="sb-nav">
+    <div class="sb-group">
+      <div class="sb-group-label">El Origen</div>
+      <a class="sb-link" href="#origen"><span class="sb-dot dot-n"></span>La Disputa del Inicio</a>
+      <a class="sb-link" href="#dioses-relacion"><span class="sb-dot dot-n"></span>Los Dioses y su Rabia</a>
+    </div>
+    <div class="sb-group">
+      <div class="sb-group-label">El Mundo Vivo</div>
+      <a class="sb-link" href="#estados"><span class="sb-dot dot-gold"></span>Estados del Mundo</a>
+      <a class="sb-link" href="#condiciones"><span class="sb-dot dot-gold"></span>Condiciones de Cambio</a>
+      <a class="sb-link" href="#consecuencias"><span class="sb-dot dot-gold"></span>Consecuencias Narrativas</a>
+    </div>
+    <div class="sb-group">
+      <div class="sb-group-label">Los Dioses</div>
+      <a class="sb-link" href="#panteones"><span class="sb-dot dot-n"></span>Los Panteones</a>
+      <a class="sb-link" href="#apariciones"><span class="sb-dot dot-n"></span>Apariciones — Cuándo y Cómo</a>
+      <a class="sb-link" href="#dioses-fisicos"><span class="sb-dot dot-n"></span>Presencias Físicas</a>
+    </div>
+    <div class="sb-group">
+      <div class="sb-group-label">La Historia Viva</div>
+      <a class="sb-link" href="#cronista-dinamico"><span class="sb-dot dot-gold"></span>El Cronista Dinámico</a>
+      <a class="sb-link" href="#ordenes"><span class="sb-dot dot-gold"></span>Órdenes Mayores</a>
+      <a class="sb-link" href="#conexion-cinco"><span class="sb-dot dot-v"></span>Conexión con Los Cinco</a>
+    </div>
+  </div>
+</nav>
+
+<div id="main">
+<div class="hero">
+  <div class="hero-divider-line"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Lore del conflicto — Capa visible</div>
+    <h1 class="hero-h1">La guerra que nadie<br>quiso, pero todos<br><em>eligieron.</em></h1>
+    <p class="hero-desc">El lore que los jugadores viven — la historia real del conflicto entre Grecia y Egipto, los dioses que lo observan, y cómo todo cambia según lo que ellos hagan.</p>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- ORIGEN -->
+<div class="chapter" id="origen">
+  <div class="ch-tag"><span class="n">I</span> — El principio de todo</div>
+  <h2 class="ch-h2">La Disputa del Inicio</h2>
+  <p class="ch-lead">Grecia y Egipto no siempre fueron enemigos. Durante un tiempo que nadie puede fechar con certeza, coexistieron en una especie de distancia respetuosa — ni aliados ni rivales. Dos civilizaciones en lados opuestos del mundo conocido, con dioses propios y formas de vida distintas, que simplemente no tenían razones para cruzar las fronteras que los separaban.</p>
+
+  <div class="sec">
+    <h3 class="sec-h3">Antes de la guerra</h3>
+    <p>La coexistencia no era paz. Era indiferencia mutua. Los griegos construían hacia arriba — columnas, montañas, templos que tocaban el cielo. Los egipcios construían hacia adentro y hacia abajo — criptas, canales, estructuras que parecían querer enterrarse en la tierra. Dos formas de entender el mundo que no necesitaban colisionar.</p>
+    <p>Los comerciantes cruzaban a veces. Los filósofos debatían en ocasiones. Un par de tratados sin consecuencias reales fueron firmados y olvidados. Había un respeto vago, de la misma forma en que uno respeta algo que existe lejos y no molesta.</p>
+    <p>Eso terminó el día en que alguien hizo la pregunta equivocada.</p>
+  </div>
+
+  <div class="sec">
+    <h3 class="sec-h3">La pregunta que lo rompió todo</h3>
+    <p>Nadie recuerda quién la hizo primero. Tampoco importa ya. La pregunta fue: <strong>¿quién llegó antes?</strong></p>
+    <p>Pareció inocente. Era una discusión académica entre eruditos de ambos lados sobre cuál de las dos civilizaciones tenía mayor antigüedad, cuál había sido la primera en llamar suyo al mundo conocido. El tipo de debate que los filósofos tienen cuando tienen demasiado tiempo libre y no suficientes guerras que los entretengan.</p>
+    <p>El problema fue que ambos lados tenían pruebas. Textos, monumentos, fechas grabadas en piedra que situaban a sus civilizaciones como las primeras en existir. Y ambos tenían razón — desde su propio punto de vista. Y ninguno podía aceptar que el otro también tuviera razón.</p>
+
+    <div class="split">
+      <div class="split-col gc">
+        <div class="split-label">La versión griega</div>
+        <div class="split-item">"Los primeros hombres emergieron de las montañas del norte. Zeus los formó del barro de los ríos helados. Antes de que hubiera faraones, había guerreros."</div>
+        <div class="split-item">"Los egipcios cruzaron el río central hace novecientos años. Nosotros ya llevábamos dos siglos en estas tierras."</div>
+        <div class="split-item">"Sus monumentos son posteriores. Sus dioses son imitaciones de los nuestros con otros nombres."</div>
+      </div>
+      <div class="split-col eg">
+        <div class="split-label">La versión egipcia</div>
+        <div class="split-item">"Ra iluminó el mundo antes de que Zeus supiera que existía. Las pirámides fueron levantadas cuando los griegos todavía dormían en cuevas."</div>
+        <div class="split-item">"Fueron soldados griegos quienes cruzaron hacia el sur hace novecientos años. Nosotros defendimos lo nuestro."</div>
+        <div class="split-item">"Sus columnas son altas porque no saben construir en profundidad. La eternidad no está en el cielo."</div>
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <div class="callout-icon">💡</div>
+      <div class="callout-body"><strong>Lo que solo Los Cinco saben</strong>Ninguna de las dos versiones es correcta. Ninguna es mentira tampoco — ambas civilizaciones construyeron sus propias memorias del pasado de buena fe. La verdad es que el mundo no existía antes de que ellas existieran. No hay un "quién llegó primero" porque no había adonde llegar. Esto jamás será revelado durante la Temporada 1 — es parte del plot twist final.</div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h3 class="sec-h3">De la disputa a la guerra</h3>
+    <p>La discusión académica escaló de formas que nadie predijo. Los eruditos se volvieron embajadores. Los embajadores se volvieron generales. Y en algún punto del proceso, alguien decidió que la forma más convincente de demostrar que uno llegó primero era demostrar que el otro no iba a poder quedarse.</p>
+    <p>El primer cruce del río central no fue una invasión. Fue una demostración. Una forma de decir: <em>este territorio también es nuestro porque siempre lo fue.</em> El problema es que la otra parte tenía exactamente el mismo argumento y exactamente la misma disposición a demostrarlo de la misma forma.</p>
+    <p>Así empezó una guerra que ambos lados siguen describiendo como defensiva.</p>
+
+    <div class="lore-block neutral">
+      <p>"Pregúntale a un griego cómo empezó la guerra y te dirá que los egipcios cruzaron primero. Pregúntale a un egipcio y te dirá lo mismo, con los roles invertidos. Ambos tienen documentos que lo prueban. Ambos los escribieron después de que ocurrió."</p>
+      <div class="lore-source">— Mercader sin facción · Testimonio en el Mercado Negro</div>
+    </div>
+  </div>
+</div>
+
+<!-- DIOSES RELACION -->
+<div class="chapter" id="dioses-relacion">
+  <div class="ch-tag"><span class="n">II</span> — Los que observan desde arriba</div>
+  <h2 class="ch-h2">Los Dioses y su Rabia</h2>
+  <p class="ch-lead">Los dioses griegos y egipcios no se odian. Se irritan. Hay una diferencia importante — el odio requiere que el otro importe demasiado. Lo que sienten es algo más parecido a la rabia de escuchar que alguien en quien no pensabas resulta ser una amenaza para lo que tú representas.</p>
+
+  <div class="sec">
+    <h3 class="sec-h3">La naturaleza del conflicto divino</h3>
+    <p>Zeus y Ra no se sentaron nunca a declararse la guerra. No fue necesario. Los dioses no necesitan declaraciones — necesitan creyentes. Y cuando los creyentes de un panteón empiezan a ganar terreno frente a los del otro, los dioses sienten ese cambio de la misma forma en que se siente el frío cuando alguien deja una ventana abierta.</p>
+    <p>Lo que los irrita no es el otro panteón en abstracto. Es la idea de que el otro panteón podría tener razón sobre algo. Que Atenea pudiera ser más sabia que Thoth. Que Ra pudiera ser más eterno que Zeus. Que el mundo hubiera sido posible sin ellos.</p>
+    <p>Esa posibilidad — no el conflicto, sino la <em>duda</em> que el conflicto genera — es lo que hace que a veces se manifiesten.</p>
+  </div>
+
+  <div class="sec">
+    <h3 class="sec-h3">Cómo se relacionan entre panteones</h3>
+    <p>Hay dioses que se ignoran mutuamente con la elegancia de quienes saben que reconocer al otro sería darle demasiada importancia. Zeus y Osiris nunca han tenido una conversación — no porque no puedan, sino porque ninguno de los dos querría ser el primero en iniciarla.</p>
+    <p>Hay otros que se observan con algo parecido al respeto profesional. Ares y Sekhmet, dioses de la guerra ambos, son conocidos por manifestarse cerca el uno del otro durante los conflictos más intensos — no para aliarse, sino porque ambos reconocen en el otro algo de lo que ellos mismos encarnan. Es la única forma de respeto que los dioses de la guerra conocen.</p>
+    <p>Y hay algunos que se provocan activamente. Hermes y Anubis compiten por las almas de los caídos en batalla — no violentamente, pero sí con una rivalidad que ninguno de los dos admitiría si se les preguntara.</p>
+
+    <div class="lore-block greece">
+      <p>"Ares no necesita que Egipto pierda. Solo necesita que Grecia gane. La diferencia puede parecer pequeña. No lo es."</p>
+      <div class="lore-source">— Diálogo de NPC en el Valle de Ares · Activación: cuando un clan griego controla 4+ territorios</div>
+    </div>
+
+    <div class="lore-block egypt">
+      <p>"Ra no guarda rencor a Zeus. Ra simplemente recuerda que existía antes de que Zeus supiera que el sol se ponía. Eso no requiere rencor. Requiere paciencia."</p>
+      <div class="lore-source">— Diálogo de NPC en el Templo de Ra · Activación: siempre disponible</div>
+    </div>
+  </div>
+</div>
+
+<!-- ESTADOS DEL MUNDO -->
+<div class="chapter" id="estados">
+  <div class="ch-tag"><span class="n">III</span> — El mundo que reacciona</div>
+  <h2 class="ch-h2">Estados del Mundo</h2>
+  <p class="ch-lead">El mundo de INVICTUS no es estático. Tiene cuatro estados posibles, determinados por el balance territorial y los logros de los jugadores. Cada estado cambia los textos del Cronista, los diálogos de los NPCs, las profecías y las apariciones de los dioses.</p>
+
+  <div class="callout staff">
+    <div class="callout-icon">⚙</div>
+    <div class="callout-body"><strong>Para el staff — cómo funciona</strong>El estado del mundo se evalúa cada lunes al publicar la Crónica Semanal. El Admin de turno determina el estado según los datos de la semana y ajusta los textos dinámicos correspondientes. No es automático — requiere criterio humano para que se sienta narrativo, no mecánico.</div>
+  </div>
+
+  <div class="states">
+    <div class="state-card state-greece">
+      <div class="state-header">
+        <div class="state-name">⚡ Dominio del Norte</div>
+        <div class="state-tag">GRECIA DOMINANTE</div>
+      </div>
+      <div class="state-desc">Grecia controla más del 60% de los territorios o ha conquistado al menos una capital egipcia. Los dioses griegos se manifiestan con más frecuencia. Los NPCs egipcios hablan con miedo contenido. El Cronista usa lenguaje de inevitabilidad.</div>
+      <div class="state-effects">
+        <span class="effect-tag">Ares más activo en eventos</span>
+        <span class="effect-tag">NPCs egipcios con diálogos de resistencia</span>
+        <span class="effect-tag">Profecías favorecen narrativa griega</span>
+        <span class="effect-tag">Atenea aparece en Atenas del Norte</span>
+      </div>
+    </div>
+    <div class="state-card state-egypt">
+      <div class="state-header">
+        <div class="state-name">☀ Dominio del Sur</div>
+        <div class="state-tag">EGIPTO DOMINANTE</div>
+      </div>
+      <div class="state-desc">Egipto controla más del 60% de los territorios o ha conquistado al menos una capital griega. Ra se manifiesta al amanecer del servidor. Los NPCs griegos hablan de reagruparse. El Cronista usa lenguaje de resistencia inevitable.</div>
+      <div class="state-effects">
+        <span class="effect-tag">Ra visible al amanecer</span>
+        <span class="effect-tag">NPCs griegos con diálogos de reconquista</span>
+        <span class="effect-tag">Profecías favorecen narrativa egipcia</span>
+        <span class="effect-tag">Anubis activo en necrópolis</span>
+      </div>
+    </div>
+    <div class="state-card state-balance">
+      <div class="state-header">
+        <div class="state-name">⚖ Equilibrio Inestable</div>
+        <div class="state-tag">TENSIÓN MÁXIMA</div>
+      </div>
+      <div class="state-desc">Ninguna facción supera el 55% del control territorial. El mundo está en el filo. Los dioses de ambos panteones se manifiestan con la misma frecuencia. El Cronista habla de que algo está a punto de decidirse. Es el estado más tenso narrativamente.</div>
+      <div class="state-effects">
+        <span class="effect-tag">Apariciones dobles — un dios de cada lado</span>
+        <span class="effect-tag">NPCs con diálogos de incertidumbre</span>
+        <span class="effect-tag">Profecías crípticas sin favorito</span>
+        <span class="effect-tag">Eventos mundiales más frecuentes</span>
+      </div>
+    </div>
+    <div class="state-card state-collapse">
+      <div class="state-header">
+        <div class="state-name">💀 El Colapso</div>
+        <div class="state-tag">ESTADO CRÍTICO</div>
+      </div>
+      <div class="state-desc">Un evento catastrófico: una facción perdió su capital, un artefacto legendario fue destruido, o un clan dominante cayó en 48 horas. El mundo está en shock narrativo. Los dioses se retiran. Los NPCs no saben qué decir. El Cronista publica una entrada especial.</div>
+      <div class="state-effects">
+        <span class="effect-tag">Silencio de dioses por 48h narrativas</span>
+        <span class="effect-tag">Crónica especial de evento catastrófico</span>
+        <span class="effect-tag">NPCs con diálogos únicos de crisis</span>
+        <span class="effect-tag">Activar Apophis si no se activa solo</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONDICIONES DE CAMBIO -->
+<div class="chapter" id="condiciones">
+  <div class="ch-tag"><span class="n">IV</span> — Cuándo cambia el mundo</div>
+  <h2 class="ch-h2">Condiciones de Cambio de Estado</h2>
+  <p class="ch-lead">El estado del mundo no cambia por un solo evento. Cambia cuando los jugadores demuestran de forma sostenida que algo ha cambiado. Como en Helldivers — no basta con ganar una batalla. Hay que ganar el patrón.</p>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Condición</th><th>Estado que activa</th><th>Duración mínima</th><th>Reversible si</th></tr></thead>
+      <tbody>
+        <tr><td>Una facción controla 14+ territorios</td><td class="td-g">Dominio del Norte / <span class="td-e">Sur</span></td><td>Desde la siguiente Crónica</td><td>Pierde 3+ territorios en una semana</td></tr>
+        <tr><td>Una facción conquista la capital enemiga</td><td class="td-g td-e">Dominio inmediato</td><td>Hasta que la capital sea reconquistada</td><td>Al reconquistar la capital</td></tr>
+        <tr><td>Ninguna facción supera 13 territorios por 2 semanas</td><td class="td-n">Equilibrio Inestable</td><td>Hasta que una facción rompa el equilibrio</td><td>Cualquier dominio claro</td></tr>
+        <tr><td>Una capital cae en menos de 48h de haber sido conquistada</td><td class="td-r">El Colapso</td><td>72 horas narrativas</td><td>Automático tras 72h</td></tr>
+        <tr><td>Un artefacto legendario es destruido o permanece sin dueño 7 días</td><td class="td-r">El Colapso</td><td>Hasta que el artefacto reaparezca</td><td>Reactivación del artefacto</td></tr>
+        <tr><td>Un clan controla 5+ territorios durante 2 semanas seguidas</td><td class="td-gold">Evento especial</td><td>Una semana</td><td>Al perder la hegemonía</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- CONSECUENCIAS NARRATIVAS -->
+<div class="chapter" id="consecuencias">
+  <div class="ch-tag"><span class="n">V</span> — Lo que sienten los jugadores</div>
+  <h2 class="ch-h2">Consecuencias Narrativas</h2>
+  <p class="ch-lead">Cada cambio de estado trae textos específicos para el Cronista, los NPCs y las profecías. Esta sección define qué dice el mundo cuando cambia — para que los jugadores sientan que sus acciones tuvieron peso real.</p>
+
+  <div class="sec">
+    <h3 class="sec-h3">Cuando Grecia toma el control</h3>
+
+    <div class="lore-block greece">
+      <p>El norte avanza. No como un ejército — como una marea. Lenta, inevitable, sin prisa porque no necesita tenerla. Los territorios del centro caen uno por uno, y en cada uno la misma historia: el estandarte egipcio baja, el griego sube, y los que vivían allí aprenden que el idioma del poder se habla con otro acento.</p>
+      <p>Los dioses del Olimpo no celebran. No necesitan celebrar. Simplemente se vuelven más visibles.</p>
+      <div class="lore-source">— Crónica Semanal · Plantilla estado Dominio del Norte</div>
+    </div>
+
+    <p><strong>Diálogos de NPC egipcios activados:</strong></p>
+    <div class="lore-block egypt">
+      <p>"Ra no abandona a sus hijos. Pero a veces les pide que sean pacientes. La arena no se rinde — espera. Y cuando el viento cambia, la arena siempre vuelve."</p>
+      <div class="lore-source">— NPC en Ciudad de Ra · Estado: Dominio del Norte</div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h3 class="sec-h3">Cuando Egipto toma el control</h3>
+
+    <div class="lore-block egypt">
+      <p>El sur se expande como siempre se expandió — con la lentitud de quien sabe que tiene más tiempo que sus enemigos. Los griegos construyen fortalezas para durar siglos. Los egipcios construyen para durar eternidades. Y ante la eternidad, los siglos son una apuesta perdida de antemano.</p>
+      <p>Los faraones no necesitan victorias rápidas. Solo necesitan que la historia les dé suficiente tiempo.</p>
+      <div class="lore-source">— Crónica Semanal · Plantilla estado Dominio del Sur</div>
+    </div>
+
+    <p><strong>Diálogos de NPC griegos activados:</strong></p>
+    <div class="lore-block greece">
+      <p>"Zeus no pierde. Zeus espera el momento correcto. Preguntar cuándo es ese momento es la única pregunta que los guerreros no deben hacerse en voz alta."</p>
+      <div class="lore-source">— NPC en Atenas del Norte · Estado: Dominio del Sur</div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h3 class="sec-h3">Durante el Equilibrio Inestable</h3>
+
+    <div class="lore-block neutral">
+      <p>El mundo contiene la respiración. Esto es lo que ocurre cuando dos fuerzas iguales se empujan desde lados opuestos — no se mueven, pero la presión aumenta. Algo tiene que ceder. Siempre cede. La pregunta no es si habrá un vencedor. La pregunta es cuándo, y quién estará mirando cuando ocurra.</p>
+      <div class="lore-source">— Crónica Semanal · Plantilla estado Equilibrio Inestable</div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h3 class="sec-h3">Cuando ocurre El Colapso</h3>
+
+    <div class="lore-block void">
+      <p>Hay cosas que cuando ocurren, el mundo tarda en entender que ocurrieron. Esta semana fue una de esas cosas. El Cronista no tiene las palabras correctas todavía. Las buscará. Pero mientras tanto, el silencio entre las dos palabras correctas dice más que cualquier crónica podría.</p>
+      <p>Los dioses no hablan hoy. Los dioses también necesitan un momento.</p>
+      <div class="lore-source">— Crónica Semanal · Plantilla estado El Colapso</div>
+    </div>
+  </div>
+</div>
+
+<!-- PANTEONES -->
+<div class="chapter" id="panteones">
+  <div class="ch-tag"><span class="n">VI</span> — Los inmortales</div>
+  <h2 class="ch-h2">Los Panteones</h2>
+  <p class="ch-lead">Los dioses de Grecia y Egipto existen en este mundo. No son metáforas ni figuras de lore abstractas — son presencias reales que los jugadores pueden encontrar, aunque raramente en la forma que esperan.</p>
+
+  <div class="sec">
+    <h3 class="sec-h3">Dioses griegos — presencias activas</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Dios</th><th>Dominio</th><th>Relación con el conflicto</th><th>Cómo se manifiesta</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Zeus</strong></td><td>Autoridad, tormenta</td><td>No interviene directamente — observa. Pero cuando Grecia pierde demasiado, su presencia se hace sentir como una tormenta que no llueve.</td><td>Texto narrativo del Cronista. Efectos de tormenta en Monte Olimpo durante ciertos estados.</td></tr>
+          <tr><td><strong>Ares</strong></td><td>Guerra, combate</td><td>El más activo de los dioses griegos. No le importa quién gana — le importa que la guerra continúe. Aparece donde el combate es más intenso.</td><td>NPC temporal en el Valle de Ares durante eventos. Diálogos que celebran el conflicto sin importar el lado.</td></tr>
+          <tr><td><strong>Atenea</strong></td><td>Estrategia, sabiduría</td><td>Apoya a Grecia no con fuerza sino con claridad. Sus manifestaciones ocurren antes de decisiones importantes — como si alguien estuviera dando un consejo que nadie pidió.</td><td>NPC en Atenas del Norte con diálogos estratégicos. Aparece con más frecuencia cuando Grecia está en desventaja.</td></tr>
+          <tr><td><strong>Poseidón</strong></td><td>Mar, profundidad</td><td>Indiferente al conflicto terrestre. Solo se manifiesta cerca del Puerto de Poseidón, y solo cuando el artefacto que lleva su nombre está en juego.</td><td>Efectos de agua y sonido en el Puerto. NPC especial cuando el Tridente está activo.</td></tr>
+          <tr><td><strong>Artemisa</strong></td><td>Caza, naturaleza</td><td>Protege el Bosque que lleva su nombre con una frialdad que no distingue entre griegos y egipcios que entren sin respeto.</td><td>NPC permanente en el Bosque de Artemisa. Activa eventos de caza.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h3 class="sec-h3">Dioses egipcios — presencias activas</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Dios</th><th>Dominio</th><th>Relación con el conflicto</th><th>Cómo se manifiesta</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Ra</strong></td><td>Sol, creación, eternidad</td><td>El más orgulloso de los dioses egipcios. La idea de que alguien pudiera creer que Grecia existió antes que Egipto le resulta tan absurda que no la dignifica con respuesta. Su silencio es su forma de desprecio.</td><td>Efectos de luz en Ciudad de Ra al amanecer. Texto narrativo en estados de dominio egipcio.</td></tr>
+          <tr><td><strong>Anubis</strong></td><td>Muerte, juicio, transición</td><td>No participa en la guerra de los vivos. Pero cuando hay suficientes muertos, aparece — no para juzgar el conflicto, sino a los que cayeron en él. Su presencia es un recordatorio de que todos los guerreros terminan en el mismo lugar.</td><td>NPC temporal en el Templo de Anubis después de raids con muchas muertes. Solo de noche.</td></tr>
+          <tr><td><strong>Thoth</strong></td><td>Sabiduría, escritura, tiempo</td><td>De todos los dioses egipcios, Thoth es el que más consciente parece de que algo no cuadra en la historia del mundo. Sus diálogos tienen un tono ligeramente más reflexivo que el de los demás — como si supiera más de lo que debería.</td><td>NPC permanente en la Gran Biblioteca. Tiene los diálogos más crípticos del servidor.</td></tr>
+          <tr><td><strong>Sobek</strong></td><td>Fuerza, peligro, protección</td><td>Indiferente a la política. Solo le interesan quienes entran en su pantano. No hace distinción de facción.</td><td>Boss pasivo en el Pantano de Sobek. NPC cuando el artefacto está activo.</td></tr>
+          <tr><td><strong>Horus</strong></td><td>Cielo, protección, realeza</td><td>El protector del faraón y de los territorios egipcios. Cuando Egipto pierde una capital, Horus es el primero en reaccionar — sus manifestaciones se vuelven más frecuentes y más urgentes.</td><td>NPC en Ciudad de Ra. Aparece con más frecuencia cuando Egipto está en desventaja.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- APARICIONES -->
+<div class="chapter" id="apariciones">
+  <div class="ch-tag"><span class="n">VII</span> — Cuándo y cómo aparecen</div>
+  <h2 class="ch-h2">Apariciones — Sistema de Manifestaciones</h2>
+  <p class="ch-lead">Los dioses no aparecen en cualquier momento. Sus manifestaciones tienen condiciones específicas — narrativas y mecánicas. Esta sección define cuándo aparece cada dios y qué dice cuando lo hace.</p>
+
+  <div class="callout info">
+    <div class="callout-icon">ℹ️</div>
+    <div class="callout-body"><strong>Principio de las apariciones</strong>Los dioses nunca explican el plot twist. Nunca mencionan a Los Cinco. Nunca sugieren que el mundo podría no ser lo que parece. Sus apariciones son completamente coherentes con la capa visible del lore — son dioses que existen, observan, y a veces hablan. Nada más.</div>
+  </div>
+
+  <div class="deity-appearances">
+    <div class="deity-appear">
+      <div class="da-header">
+        <div class="da-name">Ares</div>
+        <div class="da-faction da-greece">Grecia</div>
+        <div class="da-faction da-neutral" style="margin-left:4px">Neutral en combate</div>
+      </div>
+      <div class="da-narrative">"La guerra no necesita razones. Las razones son lo que los cobardes inventan para justificar que tardaron en empezar. Los valientes simplemente empiezan."</div>
+      <div class="da-trigger"><strong>Aparece cuando:</strong> El Valle de Ares ha sido conquistado y reconquistado 3+ veces en la misma semana · Durante el evento Ira de Ares · Cuando un clan elimina a otro completamente</div>
+    </div>
+    <div class="deity-appear">
+      <div class="da-header">
+        <div class="da-name">Anubis</div>
+        <div class="da-faction da-egypt">Egipto</div>
+        <div class="da-faction da-neutral" style="margin-left:4px">Imparcial ante la muerte</div>
+      </div>
+      <div class="da-narrative">"No juzgo a los guerreros por su facción. Juzgo por lo que hicieron con el tiempo que se les dio. Algunos lo usaron bien. Otros simplemente lo usaron."</div>
+      <div class="da-trigger"><strong>Aparece cuando:</strong> El Templo de Anubis es conquistado · Durante raids nocturnas con alta mortalidad · Estado El Colapso activo</div>
+    </div>
+    <div class="deity-appear">
+      <div class="da-header">
+        <div class="da-name">Atenea</div>
+        <div class="da-faction da-greece">Grecia</div>
+      </div>
+      <div class="da-narrative">"La victoria más duradera no es la que se gana con más fuerza. Es la que el enemigo no puede disputar porque no entiende cómo ocurrió."</div>
+      <div class="da-trigger"><strong>Aparece cuando:</strong> Grecia está en estado Dominio del Sur (amenazada) · Un clan griego sube de nivel 5 a 7 · Se completa una cadena de lore griega</div>
+    </div>
+    <div class="deity-appear">
+      <div class="da-header">
+        <div class="da-name">Thoth</div>
+        <div class="da-faction da-egypt">Egipto</div>
+        <div class="da-faction da-neutral" style="margin-left:4px">El más reflexivo</div>
+      </div>
+      <div class="da-narrative">"Hay una pregunta que los escribas llevan siglos intentando responder: ¿cuándo empezó todo esto? No me refiero a la guerra. Me refiero a todo. A veces me pregunto si la respuesta no está en el futuro en lugar del pasado."</div>
+      <div class="da-trigger"><strong>Aparece cuando:</strong> Se completa la cadena de lore de la Gran Biblioteca · Estado Equilibrio Inestable por 2 semanas · Semana 8 de la temporada — preparando el plot twist</div>
+    </div>
+    <div class="deity-appear">
+      <div class="da-header">
+        <div class="da-name">Zeus</div>
+        <div class="da-faction da-greece">Grecia</div>
+        <div class="da-faction da-neutral" style="margin-left:4px">Solo en extremos</div>
+      </div>
+      <div class="da-narrative">"No intervengo en cada batalla. Los dioses que intervienen en cada batalla son dioses que no confían en sus guerreros. Yo confío. Por ahora."</div>
+      <div class="da-trigger"><strong>Aparece cuando:</strong> Grecia pierde su capital · Estado Dominio del Sur por 3+ semanas consecutivas · Final de temporada si Grecia gana</div>
+    </div>
+    <div class="deity-appear">
+      <div class="da-header">
+        <div class="da-name">Ra</div>
+        <div class="da-faction da-egypt">Egipto</div>
+        <div class="da-faction da-neutral" style="margin-left:4px">Solo en extremos</div>
+      </div>
+      <div class="da-narrative">"El sol no necesita demostrar que sale cada mañana. Lo hace. Aquellos que lo dudan tienen toda la noche para reconsiderar su posición."</div>
+      <div class="da-trigger"><strong>Aparece cuando:</strong> Egipto pierde su capital · Estado Dominio del Norte por 3+ semanas consecutivas · Final de temporada si Egipto gana</div>
+    </div>
+  </div>
+</div>
+
+<!-- PRESENCIAS FÍSICAS -->
+<div class="chapter" id="dioses-fisicos">
+  <div class="ch-tag"><span class="n">VIII</span> — Lo que los jugadores pueden ver</div>
+  <h2 class="ch-h2">Presencias Físicas</h2>
+  <p class="ch-lead">Además de los textos narrativos, los dioses tienen presencias físicas en el mapa — NPCs especiales, efectos visuales y puntos de aparición condicionados. Esta sección define qué construye el builder y qué activa el developer.</div>
+
+  <div class="sec">
+    <h3 class="sec-h3">NPCs de dioses — reglas de diseño</h3>
+    <p>Los NPCs de dioses no son permanentes. Aparecen bajo condiciones específicas y desaparecen cuando esas condiciones dejan de cumplirse. Tienen entre 3 y 5 líneas de diálogo por estado del mundo — el staff selecciona cuál usar según el contexto narrativo de la semana.</p>
+    <p>Visualmente se diferencian de los NPCs normales en tres aspectos: tienen un nombre que comienza con el símbolo de su facción, usan una skin con elementos visuales divinos, y tienen una partícula sutil — no exagerada — que los rodea. No brillan ni tienen efectos espectaculares. Solo una presencia que se nota ligeramente distinta.</p>
+  </div>
+
+  <div class="sec">
+    <h3 class="sec-h3">Efectos de entorno ligados a los dioses</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Ubicación</th><th>Efecto</th><th>Condición de activación</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Monte Olimpo</strong></td><td>Partículas de tormenta en la cima, sin lluvia real</td><td>Estado Dominio del Sur — Zeus inquieto</td></tr>
+          <tr><td><strong>Ciudad de Ra</strong></td><td>Efecto de luz intensa al amanecer del servidor</td><td>Estado Dominio del Sur activo para Egipto</td></tr>
+          <tr><td><strong>Valle de Ares</strong></td><td>Partículas de fuego en el suelo del Valle</td><td>Durante evento Ira de Ares y 24h después</td></tr>
+          <tr><td><strong>Templo de Anubis</strong></td><td>Niebla oscura en los pasillos interiores</td><td>Solo de noche · siempre activo</td></tr>
+          <tr><td><strong>Gran Biblioteca de Thoth</strong></td><td>Partículas de texto flotante cerca de las estanterías</td><td>Siempre · se intensifica en Semana 8</td></tr>
+          <tr><td><strong>Bosque de Artemisa</strong></td><td>Silencio de animales cuando entra un jugador — sin sonido ambiente</td><td>Siempre · el efecto lo nota quien presta atención</td></tr>
+          <tr><td><strong>Puerto de Poseidón</strong></td><td>El agua del puerto tiene un color ligeramente más profundo</td><td>Siempre · solo visible de cerca</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- CRONISTA DINÁMICO -->
+<div class="chapter" id="cronista-dinamico">
+  <div class="ch-tag"><span class="n">IX</span> — La voz que cambia</div>
+  <h2 class="ch-h2">El Cronista Dinámico</h2>
+  <p class="ch-lead">El Cronista no solo registra — interpreta. Y su interpretación cambia según el estado del mundo. La misma conquista se describe de forma diferente si ocurre durante el Dominio del Norte que durante el Equilibrio Inestable.</p>
+
+  <div class="sec">
+    <h3 class="sec-h3">El mismo evento, narrado de cuatro formas</h3>
+    <p>Un clan conquista un territorio central importante. Esto es lo que escribe el Cronista en cada estado:</p>
+
+    <div class="lore-block greece">
+      <p><strong>Durante Dominio del Norte:</strong> "El avance continúa. [CLAN] añadió hoy [TERRITORIO] a una lista que sigue creciendo. En el norte, esto no es noticia — es la confirmación de lo que ya todos sabían que ocurriría."</p>
+      <div class="lore-source">— Tono: inevitabilidad · Dominante siente validación · Rival siente urgencia</div>
+    </div>
+    <div class="lore-block egypt">
+      <p><strong>Durante Dominio del Sur:</strong> "[CLAN] demostró hoy que la resistencia tiene forma y nombre. [TERRITORIO] cayó, sí — pero cada territorio que cae en estas condiciones es una declaración de que algo no está terminado todavía."</p>
+      <div class="lore-source">— Tono: resistencia · Dominante siente desafío · Rival encuentra esperanza</div>
+    </div>
+    <div class="lore-block neutral">
+      <p><strong>Durante Equilibrio Inestable:</strong> "El mapa cambió hoy. No mucho. Pero en este momento, cualquier cambio en el mapa es una señal que todos interpretan de formas distintas y ninguno interpreta igual."</p>
+      <div class="lore-source">— Tono: tensión · Ambos lados sienten que algo se está decidiendo</div>
+    </div>
+    <div class="lore-block void">
+      <p><strong>Durante El Colapso:</strong> "[TERRITORIO] tiene nuevo dueño. El Cronista anotará esto como un hecho. Qué significa este hecho en el contexto de lo que ocurrió esta semana es algo que el Cronista no sabe todavía cómo explicar."</p>
+      <div class="lore-source">— Tono: desorientación · Todos sienten que el mundo está recalibrando</div>
+    </div>
+  </div>
+</div>
+
+<!-- ÓRDENES MAYORES -->
+<div class="chapter" id="ordenes">
+  <div class="ch-tag"><span class="n">X</span> — El peso de las decisiones colectivas</div>
+  <h2 class="ch-h2">Decisiones que cambian el mundo</h2>
+  <p class="ch-lead">Una vez por semana, el mundo emite una Orden Mayor — un objetivo colectivo con consecuencias narrativas reales según si los jugadores lo completan o lo fallan. No es un evento mecánico. Es una decisión que el mundo necesita que se tome.</p>
+
+  <div class="callout staff">
+    <div class="callout-icon">⚙</div>
+    <div class="callout-body"><strong>Para el staff</strong>Cada semana el staff define un objetivo colectivo con consecuencias narrativas reales según si los jugadores lo completan o lo fallan. Se publica cada lunes junto a la Crónica. No siempre es combate — puede ser económico, de construcción o de lore. Se anuncia con tono de profecía, no de misión.</div>
+  </div>
+
+  <div class="sec">
+    <h3 class="sec-h3">Ejemplos de objetivos colectivos y sus consecuencias</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Orden Mayor</th><th>Si se completa</th><th>Si se falla</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>"El Valle no puede caer"</strong><br><small>Grecia debe mantener el Valle de Ares durante 5 días seguidos</small></td>
+            <td class="td-g">Ares se manifiesta físicamente · Próxima semana con upkeep reducido para Grecia · Crónica celebratoria</td>
+            <td class="td-e">El Valle queda en estado de "tierra maldita" por 48h · Ares desaparece del mapa · Crónica de abandono divino</td>
+          </tr>
+          <tr>
+            <td><strong>"Las pirámides no se rinden"</strong><br><small>Egipto debe defender las Grandes Pirámides durante 7 días</small></td>
+            <td class="td-e">Ra se manifiesta al amanecer durante 3 días · Bonificación en producción de territorios egipcios · Crónica de resistencia eterna</td>
+            <td class="td-g">Las pirámides "recuerdan" a sus conquistadores — los NPCs de Egipto cambian sus diálogos a registros de derrota · Crónica de la caída de lo eterno</td>
+          </tr>
+          <tr>
+            <td><strong>"El equilibrio debe romperse"</strong><br><small>Cualquier facción debe conquistar 3 territorios centrales en 5 días</small></td>
+            <td class="td-gold">El estado Equilibrio Inestable termina · La facción que lo logra entra en Dominio · Evento mundial desbloqueado</td>
+            <td class="td-r">El estado se convierte en El Colapso · Apophis se activa sin aviso · Ambas facciones reciben penalización narrativa</td>
+          </tr>
+          <tr>
+            <td><strong>"Thoth pide silencio"</strong><br><small>Ninguna capital puede ser atacada durante 3 días</small></td>
+            <td class="td-gold">Thoth aparece en la Gran Biblioteca con un diálogo único que contiene una pista sutil del plot twist · Evento de lore desbloqueado</td>
+            <td class="td-r">Thoth desaparece del mapa durante 2 semanas · Los libros sin título de la biblioteca cambian de orden · Sin consecuencia mecánica visible</td>
+          </tr>
+          <tr>
+            <td><strong>"La guerra necesita un nombre"</strong><br><small>El clan con más territorios al final de la semana nombra el conflicto de esa semana</small></td>
+            <td class="td-gold">El nombre elegido aparece en la Crónica como nombre oficial de esa semana · El clan queda registrado como "El que nombró la guerra"</td>
+            <td class="td-n">El Cronista nombra el conflicto con el nombre más irónico posible · El estado pasa a Equilibrio Inestable si no lo estaba</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- CONEXIÓN CON LOS CINCO -->
+<div class="chapter" id="conexion-cinco">
+  <div class="ch-tag"><span class="n">XI</span> — La capa que conecta todo</div>
+  <h2 class="ch-h2">Conexión con Los Cinco</h2>
+  <p class="ch-lead">Esta sección es solo para el staff. Define cómo el lore del conflicto visible se conecta con la capa oculta de Los Cinco sin que los jugadores lo noten durante la temporada.</p>
+
+  <div class="callout staff">
+    <div class="callout-icon">🔒</div>
+    <div class="callout-body"><strong>Confidencial — solo staff</strong>Todo lo que está en este capítulo no debe filtrarse. Es la arquitectura oculta que hace que el plot twist funcione. Los dioses griegos y egipcios no saben que Los Cinco existen. Los Cinco no interfieren con los panteones. Son capas paralelas del mismo mundo que solo convergen al final.</div>
+  </div>
+
+  <div class="sec">
+    <h3 class="sec-h3">Por qué existe este conflicto — la verdad</h3>
+    <p>Los Cinco necesitaban que Grecia y Egipto existieran en conflicto. No porque les interese quién gane — sino porque el conflicto es lo que genera la historia que ellos necesitaban que existiera para poder existir plenamente.</p>
+    <p>Vorn necesitaba el caos de la guerra. Aethr necesitaba la estructura de las facciones. Nulh necesitaba las sombras que dejan los caídos. Yrev necesitaba la pregunta irresolvible de quién llegó primero. Y Seln necesitaba saber que eventualmente todo esto terminaría y comenzaría de nuevo.</p>
+    <p>Los dioses griegos y egipcios son reales. Su rabia es real. Su conflicto es real. Pero el origen más profundo de ese conflicto — la razón por la que el mundo los necesitaba en lados opuestos — es Los Cinco. Y ni Zeus ni Ra lo saben.</p>
+  </div>
+
+  <div class="sec">
+    <h3 class="sec-h3">Thoth como excepción parcial</h3>
+    <p>De todos los dioses de ambos panteones, Thoth es el único que tiene una sospecha vaga de que algo no cuadra. No sabe qué. No sabe cómo llamarlo. Pero sus diálogos más crípticos — especialmente en la Semana 8 — están diseñados para que, en retrospectiva, parezca que Thoth lo vio venir.</p>
+
+    <div class="lore-block void">
+      <p>"He escrito la historia de este conflicto desde el principio. Pero a veces, cuando releo lo que escribí, noto que algunas frases las escribí antes de que los eventos que describen hubieran ocurrido. Lo achaco al cansancio. Aunque el cansancio no explica por qué las frases siempre resultan correctas."</p>
+      <div class="lore-source">— Thoth · Diálogo Semana 8 · Solo aparece si se completa la Orden Mayor "Thoth pide silencio"</div>
+    </div>
+  </div>
+
+  <div class="ornament">⚔ · · · ⚔</div>
+
+  <div class="lore-block gold">
+    <p>La disputa de quién llegó primero nunca tendrá respuesta porque la respuesta correcta es que nadie llegó primero — llegaron los dos al mismo tiempo, en el mismo instante en que Los Cinco necesitaron que existiera un mundo con dos lados opuestos.</p>
+    <p>Pero eso es algo que solo Los Cinco saben. Y Los Cinco no hablan con griegos ni con egipcios.</p>
+    <p>Solo hablan entre ellos. En un idioma que todavía no existe porque todavía no ha sido escrito.</p>
+    <div class="lore-source">— Este texto no tiene ubicación en el servidor. Es la verdad del mundo. Vive aquí.</div>
+  </div>
+</div>
+
+</div>
+</div>
+
+<script>
+const secs = Array.from(document.querySelectorAll('.chapter[id]'));
+const links = document.querySelectorAll('.sb-link[href^="#"]');
+function upd(){
+  let cur = secs[0];
+  for(const s of secs){ if(s.getBoundingClientRect().top <= 100) cur = s; }
+  links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#'+cur.id));
+}
+window.addEventListener('scroll', upd, {passive:true});
+upd();
+</script>
+</body>
+</html>
